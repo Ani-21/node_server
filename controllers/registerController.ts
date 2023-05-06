@@ -16,7 +16,7 @@ export const handleNewUser = async (req: Request, res: Response) => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const result = await User.create({
+    const user = await User.create({
       username,
       password: hashedPassword,
       city,
@@ -24,9 +24,7 @@ export const handleNewUser = async (req: Request, res: Response) => {
       university,
     });
 
-    console.log(result);
-
-    res.status(201).json({ success: `Создан новый пользователь ${username}` });
+    res.status(201).json({ success: `Создан новый пользователь ${user}` });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

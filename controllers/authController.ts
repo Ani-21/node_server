@@ -14,33 +14,37 @@ export const handleLogin = async (req: Request, res: Response) => {
   if (!foundUser)
     return res.status(401).json({ msg: "Пользователь не найден" });
 
-  const match = await bcrypt.compare(password, foundUser.password);
+  try {
+    const match = await bcrypt.compare(password, foundUser.password);
 
-  if (match) {
-    const accessToken = jwt.sign(
-      { username: foundUser.username },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "10s" }
-    );
+    if (match) {
+      const accessToken = jwt.sign(
+        { username: foundUser.username },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "10s" }
+      );
 
-    const refreshToken = jwt.sign(
-      { username: foundUser.username },
-      process.env.REFRESH_TOKEN_SECRET,
-      { expiresIn: "21d" }
-    );
+      const refreshToken = jwt.sign(
+        { username: foundUser.username },
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: "21d" }
+      );
 
-    foundUser.refreshToken = refreshToken;
+      foundUser.refreshToken = refreshToken;
 
-    const result = await foundUser.save();
+      const result = await foundUser.save();
 
-    res.cookie("jwt", refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: 24 * 60 * 60 * 1000,
-    });
-    res.json({ accessToken });
-  } else {
-    res.sendStatus(401);
+      res.cookie("jwt", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 24 * 60 * 60 * 1000,
+      });
+      res.json({ accessToken });
+    } else {
+      res.sendStatus(401);
+    }
+  } catch (err) {
+    res.status(404).json({ message: err.message });
   }
 };
