@@ -6,12 +6,12 @@ export const handleNewUser = async (req: Request, res: Response) => {
   const { username, password, city, age, university } = req.body;
 
   if (!username || !password)
-    return res.status(400).json({ msg: "Требуется ввести логин и пароль" });
+    return res.status(400).json({ message: "Требуется ввести логин и пароль" });
 
   const duplicate = await User.findOne({ username }).exec();
 
   if (duplicate)
-    return res.status(409).json({ msg: "Пользователь уже существует" });
+    return res.status(409).json({ message: "Пользователь уже существует" });
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);

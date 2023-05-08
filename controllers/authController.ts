@@ -7,12 +7,12 @@ export const handleLogin = async (req: Request, res: Response) => {
   const { username, password } = req.body;
 
   if (!username || !password)
-    return res.status(400).json({ msg: "Требуется ввести логин и пароль" });
+    return res.status(400).json({ message: "Требуется ввести логин и пароль" });
 
   const foundUser = await User.findOne({ username }).exec();
 
   if (!foundUser)
-    return res.status(401).json({ msg: "Пользователь не найден" });
+    return res.status(401).json({ message: "Пользователь не найден" });
 
   try {
     const match = await bcrypt.compare(password, foundUser.password);

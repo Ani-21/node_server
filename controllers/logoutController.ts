@@ -15,7 +15,7 @@ export const handleLogout = async (req: Request, res: Response) => {
     }
 
     if (foundUser === null) {
-      res.json({ msg: "Нет такого пользователя" });
+      res.json({ message: "Нет такого пользователя" });
     } else {
       foundUser.refreshToken = "";
       return await foundUser.save();

@@ -7,6 +7,6 @@ export const connectDB = async () => {
       useNewUrlParser: true,
     } as ConnectOptions);
   } catch (err) {
-    throw new Error("Что-то пошло не так", err);
+    throw new Error("Что-то пошло не так");
   }
 };
