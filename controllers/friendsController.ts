@@ -46,7 +46,6 @@ export const addFriend = async (req: Request, res: Response) => {
 
   if (!user?.friends.includes(friendId)) {
     user?.friends.push(friendId);
-
     friend?.friends.push(id);
   }
 
@@ -69,28 +68,28 @@ export const addFriend = async (req: Request, res: Response) => {
 };
 
 export const deleteFriend = async (req: Request, res: Response) => {
-  const { id, friendId } = req.params;
+  const { userId, friendId } = req.params;
 
-  const user = await User.findById(id);
+  if (userId === friendId)
+    return res.json({ message: "Вы не можете удалить из списка самого себя" });
+
+  const user = await User.findById(userId);
   const friend = await User.findById(friendId);
 
-  user?.friends.filter((id) => id !== friendId);
-  friend?.friends.filter((id) => id !== id);
+  if (user?.friends.includes(friendId)) {
+    // @ts-ignore
+    user?.friends = user?.friends.filter((id) => id !== friendId);
+    // @ts-ignore
+    friend?.friends = friend?.friends.filter((id) => id !== userId);
+  }
+
+  await user?.save();
+  await friend?.save();
 
   const friends = await Promise.all(
     // @ts-ignore
     user?.friends.map((id) => User.findById(id))
   );
 
-  // @ts-ignore
-  const formattedFriends = friends.map(({ _id, username, university }) => ({
-    _id,
-    username,
-    university,
-  }));
-
-  await user?.save();
-  await friend?.save();
-  const result = user?.friends;
-  res.status(200).json(result);
+  res.json(friends);
 };

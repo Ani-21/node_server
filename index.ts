@@ -1,4 +1,5 @@
 require("dotenv").config();
+import path from "path";
 import cors from "cors";
 import express from "express";
 import cookieParser from "cookie-parser";
@@ -22,12 +23,16 @@ app.use(cors(corsOptions));
 
 app.use(express.urlencoded({ extended: false }));
 
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname) + "/static/index.html");
+});
+
 app.use("/register", require("./routes/register"));
 app.use("/auth", require("./routes/auth"));
 app.use("/refresh", require("./routes/refresh"));
 app.use("/logout", require("./routes/logout"));
 
-// app.use(verifyJWT);
+app.use(verifyJWT);
 app.use("/posts", require("./routes/api/posts"));
 app.use("/users", require("./routes/api/users"));
 

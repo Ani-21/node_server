@@ -15,6 +15,6 @@ router.route("/").get(getPosts).post(createPost);
 
 router.route("/:id").get(getPost).patch(updatePost).delete(deletePost);
 
-router.route("/:id/likePost").patch(likePost);
+router.route("/:id/likePost").post(likePost);
 
 module.exports = router;
