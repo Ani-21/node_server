@@ -76,4 +76,14 @@ export const deletePost = async (req: Request, res: Response) => {
 
 export const likePost = async (req: Request, res: Response) => {
   const { id } = req.params;
+
+  const foundPost = await Post.findById(id);
+
+  const updatedPost = await Post.findByIdAndUpdate(
+    id,
+    { likeCount: foundPost.likeCount + 1 },
+    { new: true }
+  );
+
+  res.json(updatedPost.likeCount);
 };

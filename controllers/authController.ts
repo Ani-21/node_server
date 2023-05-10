@@ -18,10 +18,12 @@ export const handleLogin = async (req: Request, res: Response) => {
     const match = await bcrypt.compare(password, foundUser.password);
 
     if (match) {
+      const userId = foundUser._id;
+
       const accessToken = jwt.sign(
         { username: foundUser.username },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "10s" }
+        { expiresIn: "10d" }
       );
 
       const refreshToken = jwt.sign(
@@ -40,7 +42,7 @@ export const handleLogin = async (req: Request, res: Response) => {
         sameSite: "none",
         maxAge: 24 * 60 * 60 * 1000,
       });
-      res.json({ accessToken });
+      res.json({ accessToken, userId });
     } else {
       res.sendStatus(401);
     }

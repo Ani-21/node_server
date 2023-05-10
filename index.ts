@@ -27,10 +27,9 @@ app.use("/auth", require("./routes/auth"));
 app.use("/refresh", require("./routes/refresh"));
 app.use("/logout", require("./routes/logout"));
 
+// app.use(verifyJWT);
 app.use("/posts", require("./routes/api/posts"));
 app.use("/users", require("./routes/api/users"));
-
-app.use(verifyJWT);
 
 mongoose.connection.once("open", () => {
   console.log("Connected to MongoDB");

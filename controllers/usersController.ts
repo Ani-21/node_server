@@ -16,6 +16,7 @@ export const getUser = async (req: Request, res: Response) => {
   try {
     const foundUser = await User.findById(id);
     if (!foundUser) res.json({ message: "Пользователь не наден" });
+
     return res.status(200).json(foundUser);
   } catch (err) {
     res.status(404).json({ message: err.message });
