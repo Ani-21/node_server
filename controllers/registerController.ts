@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../models/User";
 
@@ -24,7 +25,19 @@ export const handleNewUser = async (req: Request, res: Response) => {
       university,
     });
 
-    res.status(201).json({ success: `Создан новый пользователь ${user}` });
+    const accessToken = jwt.sign(
+      { username: username },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "10d" }
+    );
+
+    res
+      .status(201)
+      .json({
+        success: `Создан новый пользователь ${user}`,
+        accessToken,
+        userId: user._id,
+      });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
